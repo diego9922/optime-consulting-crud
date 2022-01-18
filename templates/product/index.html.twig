@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello ProductController!{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <div class="row">
+            <center>
+                <h1>Productos</h1>
+            </center>
+        </div>
+        <div class="row" id="productsContentForm">
+            
+        </div>
+        <div class="row" id="productsContentList">
+            
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $(document).ready(function(){
+            $.ajax({
+                type: 'GET',
+                contentType: 'text/html',
+                url: '{{ url("product_form") }}',
+                beforeSend: function(){},
+                success: function(response){
+                    $('#productsContentForm').html(response);
+                },
+                error: function(error, xhr){},
+                complete: function(){}
+            });
+        });
+
+        function saveProduct(){
+            $.ajax({
+                type: 'POST',
+                contentType: 'text/html',
+                url: '{{ url("product_form") }}',
+                beforeSend: function(){},
+                success: function(response){
+                    $('#productsContentForm').html(response);
+                },
+                error: function(error, xhr){
+                    console.error(error);
+                },
+                complete: function(){}
+            });
+        }
+    </script>
+{% endblock %}
