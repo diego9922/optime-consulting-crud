@@ -1,14 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Guardar Producto{% endblock %}
+
+{% block body %}
+
+{{ form_start(formContent, {'method': 'POST', 'id': 'formProduct', 'name': 'formProduct'}) }}
 <div class="card">
     <div class="card-header text-center">
-        Formulario Productos
+        <h1>Formulario Productos</h1>
     </div>
     <div class="card-body">
         <!-- <h5 class="card-title">s</h5>
         <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
         <a href="#" class="btn btn-primary">Go somewhere</a> -->
-		{{ form(formContent, {'method': 'POST', 'id': 'formProduct', 'name': 'formProduct'}) }}
+		{#{ form(formContent, {'method': 'POST', 'id': 'formProduct', 'name': 'formProduct'}) }#}
+
+			{{ form_label(formContent.code) }}
+			{{ form_widget(formContent.code, {'attr': {'class': 'form-control'}}) }}
+
+			{{ form_label(formContent.name) }}
+			{{ form_widget(formContent.name, {'attr': {'class': 'form-control'}}) }}
+
+			{{ form_label(formContent.description) }}
+			{{ form_widget(formContent.description, {'attr': {'class': 'form-control'}}) }}
+
+			{{ form_label(formContent.brand) }}
+			{{ form_widget(formContent.brand, {'attr': {'class': 'form-control'}}) }}
+
+			{{ form_label(formContent.price) }}
+			{{ form_widget(formContent.price, {'attr': {'class': 'form-control'}}) }}
+
+			{{ form_label(formContent.category) }}
+			{{ form_widget(formContent.category, {'attr': {'class': 'form-control'}}) }}
+
     </div>
     <div class="card-footer">
-	    <button id="productFormButton" class="btn btn-primary" onclick="saveProduct()">Guardar</button>
+		{{ form_widget(formContent.save, {'attr': {'class': 'btn btn-primary'}}) }}
+	    <a href="{{url('product_list')}}" class="btn btn-default">Ver lista</a>
 	</div>
 </div>
+{{ form_end(formContent) }}
+{% endblock %}
+
+{% block javascripts %}
+	{% if message is not empty %}
+		<script type="text/javascript">
+			alert('{{message}}');
+		</script>
+	{% endif %}
+{% endblock %}

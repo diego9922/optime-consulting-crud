@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ProductRepository;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=ProductRepository::class)
@@ -20,32 +21,53 @@ class Product
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
+     * @Assert\NotBlank
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 10,
+     *      minMessage = "Your first name must be at least {{ limit }} characters long",
+     *      maxMessage = "Your first name cannot be longer than {{ limit }} characters"
+     * )
+     * @Assert\Regex(
+     *     pattern     = "/^[a-zA-Z0-9]+$/i",
+     *     htmlPattern = "[a-zA-Z0-9]+"
+     * )
      */
     private $code;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
+     * @Assert\NotBlank
+     * @Assert\Length(
+     *      min = 4,
+     *      minMessage = "Your first name must be at least {{ limit }} characters long",
+     * )
      */
     private $name;
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\NotBlank
      */
     private $description;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank
      */
     private $brand;
 
     /**
      * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="products")
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotBlank
      */
     private $category;
 
     /**
      * @ORM\Column(type="float")
+     * @Assert\NotBlank
+     * @Assert\PositiveOrZero
      */
     private $price;
 
@@ -147,8 +169,20 @@ class Product
         return $this->createdAt;
     }
 
+    public function setCreatedAt($createAt)
+    {
+        $this->createdAt = $createAt;
+        return $this;
+    }
+
     public function getUpdatedAt()
     {
         return $this->updatedAt;
+    }
+
+    public function setUpdatedAt($updated)
+    {
+        $this->updatedAt = $updates;
+        return $this;
     }
 }

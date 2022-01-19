@@ -8,6 +8,9 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Bridge\Doctrine\Form\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 
 class ProductType extends AbstractType
 {
@@ -18,9 +21,7 @@ class ProductType extends AbstractType
             ->add('name')
             ->add('description')
             ->add('brand')
-            ->add('price')
-            // ->add('createdAt')
-            // ->add('updatedAt')
+            ->add('price', IntegerType::class)
             ->add('category', EntityType::class, [
                 'required' => true,
                 'class' => Category::class,
@@ -33,6 +34,10 @@ class ProductType extends AbstractType
                     return $category->getName();
                 }
             ])
+            ->add('save', SubmitType::class, [
+                'label' => 'Guardar',
+                'attr' => ['class' => 'btn btn-primary'],
+            ]);
         ;
     }
 

@@ -1,54 +1,90 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ProductController!{% endblock %}
+{% block title %}Guardar Producto{% endblock %}
 
 {% block body %}
-    <div class="container-fluid">
-        <div class="row">
-            <center>
-                <h1>Productos</h1>
-            </center>
+
+    <div class="row">
+        <div class="col">
+            <a href="{{url('product_new')}}" class="btn btn-primary">Agregar Producto</a>
+            <a href="{{url('product_report_xlsx')}}" class="btn btn-success">Generar xlsx</a>
         </div>
-        <div class="row" id="productsContentForm">
-            
-        </div>
-        <div class="row" id="productsContentList">
-            
+        <div class="col">
+            {{ knp_pagination_filter(pagination, { 'code': 'Codigo', 'name': 'Nombre', 'description': 'Descripción', 'brand': 'Marca'}) }}
         </div>
     </div>
-
+    <div class="row">
+        <div class="count">
+            <strong>Total Registros:</strong> {{ pagination.getTotalItemCount }}
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>{{ knp_pagination_sortable(pagination, 'Id', 'id') }}</th>
+                    <th>{{ knp_pagination_sortable(pagination, 'Codigo', 'code') }}</th>
+                    <th>{{ knp_pagination_sortable(pagination, 'Nombre', 'name') }}</th>
+                    <th>{{ knp_pagination_sortable(pagination, 'Descripción', 'description') }}</th>
+                    <th>{{ knp_pagination_sortable(pagination, 'Marca', 'brand') }}</th>
+                    <th>Categoria</th>
+                    <th>{{ knp_pagination_sortable(pagination, 'Precio', 'price') }}</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for product in pagination %}
+                <tr class="color">
+                    <td>{{ product.id }}</td>
+                    <td>{{ product.code }}</td>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.description }}</td>
+                    <td>{{ product.brand }}</td>
+                    <td>{{ product.category.name }}</td>
+                    <td>{{ product.price }}</td>
+                    <td>
+                        <div class="btn-group">
+                            <a href="{{url('product_update', {'productId': product.id})}}" class="btn btn-xs btn-info">
+                                Editar
+                            </a>
+                            <button class="btn btn-xs btn-danger productBtnDelete" data-name="{{product.name}}" data-url="{{url('product_delete', {'productId': product.id})}}">
+                                Eliminar
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {# display navigation #}
+        <div class="navigation">
+            {{ knp_pagination_render(pagination) }}
+        </div>
+    </div>
 {% endblock %}
 
 {% block javascripts %}
-    <script>
+    <script type="text/javascript">
         $(document).ready(function(){
-            $.ajax({
-                type: 'GET',
-                contentType: 'text/html',
-                url: '{{ url("product_form") }}',
-                beforeSend: function(){},
-                success: function(response){
-                    $('#productsContentForm').html(response);
-                },
-                error: function(error, xhr){},
-                complete: function(){}
+            $('.productBtnDelete').click(function(){
+                let info = {
+                    url: $(this).data('url'),
+                    name: $(this).data('name')
+                };
+                $.confirm({
+                    title: '¿Esta seguro de eliminar el producto?',
+                    content: 'El producto <strong>'+info.name+'</strong> se eliminara permanentemente',
+                    type: 'red',
+                    buttons: {
+                        confirm: {
+                            btnClass: 'btn-red',
+                            action: function () {
+                                location.href = info.url;
+                            },
+                        },
+                        cancel: function () {
+                        }
+                    }
+                });
             });
         });
-
-        function saveProduct(){
-            $.ajax({
-                type: 'POST',
-                contentType: 'text/html',
-                url: '{{ url("product_form") }}',
-                beforeSend: function(){},
-                success: function(response){
-                    $('#productsContentForm').html(response);
-                },
-                error: function(error, xhr){
-                    console.error(error);
-                },
-                complete: function(){}
-            });
-        }
     </script>
 {% endblock %}

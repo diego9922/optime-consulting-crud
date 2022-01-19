@@ -47,4 +47,24 @@ class ProductRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function findLikeAndSort($field = null, $value = null, $sort = null, $direction = null){
+        $filtersValids = ['code', 'name', 'description', 'brand'];
+        $query = $this->createQueryBuilder('p');
+
+        if(isset($field) && isset($value) && !empty($field) && !empty($value) && in_array($field, $filtersValids)) 
+            $query->andWhere('p.'.$field.' LIKE :val')->setParameter('val', '%'.$value.'%');
+        if(isset($sort) && isset($direction)) 
+            $query->orderBy('p.'.$sort, $direction);
+        
+        return $query->getQuery()->getResult();
+    }
+
+    public function findAllArrayResult(){
+        return $this->createQueryBuilder('p')
+            ->orderBy('p.id', 'ASC')
+            ->getQuery()
+            ->getArrayResult();
+    }
+
 }
